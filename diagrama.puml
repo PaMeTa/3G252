@@ -1,0 +1,164 @@
+@startuml
+skinparam classAttributeIconSize 0 
+
+class JuegoAjedrez{
+-tablero: TableroAjedrez
+-jugadores: Jugador[]
+-actualJugador: Jugador
+-estadoJuego: EstadoJuego
+-historialMovimiento: Movimiento[]
++iniciarJuego()
++hacerMovimiento(desde: posicion, hacia: Posicion) : : bool
++esHakemate() : : bool
++esAhogado() : : bool
++obtenerMovimientoValido(posicion: Posicion) : : Posicion[]
++deshacerMovimiento()
+}
+
+class ColorPieza <<enumeracion>> {
+BLANCO
+NEGRO
+}
+
+class EstadoJuego <<enumeracion>>{
+ACTIVO
+HAKE
+HAKEMATE
+AHOGADO
+RENDICION
+TABLAS
+}
+
+class TipoPieza <<enumeracion>>{
+REY
+REINA
+TORRE
+ALFIL
+CABALLO
+PEON
+}
+
+class TableroAjedrez{
+-cuadros: Cuadro[8][8]
++obtenerCuadro(fila: int, columna: int) : : Cuadro
++colocaCuadro(fila: int, columna: int, pieza: Pieza) : : void
++estaCuadroOcupado(fila:int, columna: int) : : bool
++inicializarTablero() : : void
++reiniciarTablero() : : void
+}
+
+TableroAjedrez "1" --* "1" JuegoAjedrez
+
+class Cuadro{
+-posicion: Posicion
+-pieza: Pieza
++obtenerPieza() : : Pieza
++colocaPieza(pieza: Pieza) : : void
++estaVacio : : bool
+}
+
+Cuadro "64" --* "1" TableroAjedrez
+
+class Posicion{
+-fila: int
+-columna: int
++obtenerFila() : : int
++obtenerColumna() : : int
++equivale(otro: Posicion) : : bool
++paraEnsartar() : : string
+}
+
+Posicion "1" --* "1" Cuadro
+
+class Jugador{
+-nombre: string
+-color: ColorPieza
+-piezasCapturadas: Pieza[]
++obtenerNombre() : : string
++obtenerColor() : : ColorPieza
+++aniadirPiezaCapturada(pieza: Pieza) : : void
+}
+
+Jugador "2" --* "1" JuegoAjedrez
+
+class Movimiento{
+-pieza: Pieza
+-desde: Posicion
+-hacia: Posicion
+-piezaCapturada: Pieza
+-esEnroque: bool
+-esCapturaAlPaso: bool
+-piezaPromocion: TipoPieza
++obtenerPieza() : : Pieza
++obtenerDesde() : : Posicion
++obtenerHacia() : : Posicion
++obtenerPiezaCapturada() : : Pieza
++esMovimientoEspecial() : : bool
+}
+
+Movimiento "*" --* "1" JuegoAjedrez
+
+Movimiento "1" *-- "1" Posicion
+
+class Pieza <<abstracto>>{
+-color: ColorPieza
+-posicion: Posicion}
+-haMovido: bool
+-haMovido: bool
++obtenerColor() : : ColorPieza
++obtenerPosicion() : : Posicion
++establecerPosicion(posicion: Posicion) : : void
++obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion []
++mover(hacia: Posicion) : : void
++haSidoMovida() : : bool
++paraEnsartar() : : string
+}
+
+class Rey{
++estaEnHake(tablero: TableroAjedrez) : : boolean
++puedeEnrocar(tablero: TableroAjedrez) : : bool
+}
+
+class Reina{
+#obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion[]
+}
+
+class Torre{
+#obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion[]
+}
+
+class Alfil{
+#obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion[]
+}
+
+class Caballo{
+#obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion[]
+}
+
+class Peon{
+-vulnerableCapturaAlPaso: bool
+#obtenerMovimientosValidos(tablero: TableroAjedrez) : : Posicion[]
++puedePromocionar() : : bool
++esVulnerableCapturaAlPaso() : : bool
+}
+
+Pieza "1" --* "1" Movimiento : piezaCapturada
+
+Pieza "1" --* "1" Movimiento
+
+Pieza "*" --* "1" Jugador
+
+Pieza "0." --* "1" Cuadro
+
+Pieza <|-- Rey
+
+Pieza <|-- Reina
+
+Pieza <|-- Torre
+
+Pieza <|-- Alfil
+
+Pieza <|-- Caballo
+
+Pieza <|--Peon
+@enduml
